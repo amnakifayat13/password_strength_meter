@@ -51,6 +51,13 @@ random_password = option[choose]
 # Custom CSS for styling
 st.markdown("""
     <style>
+    body {
+            background-color: #f5f7fa;
+        }
+        .stApp {
+            background: linear-gradient(135deg,rgb(223, 129, 187),rgb(94, 19, 44));
+            color: white;
+        }
         .stTextInput>div>div>input {
             border: 2px solid rgb(170, 49, 130);
             border-radius: 10px;
@@ -58,7 +65,7 @@ st.markdown("""
             font-size: 16px;
         }
         .stButton>button {
-            background-color: rgb(170, 49, 130);
+            background-color: rgb(90, 5, 62);
             color: white;
             font-size: 16px;
             padding: 10px;
@@ -67,14 +74,14 @@ st.markdown("""
             cursor: pointer;
         }
         .stButton>button:hover {
-            background-color:rgb(160, 69, 119);
+            background-color:rgb(63, 5, 37);
             
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Title & Input Field
-st.markdown("<h1 style='text-align: center; color:rgb(170, 49, 130);'>🔐 Password Strength Meter</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color:rgb(63, 5, 37);'>🔐 Password Strength Meter</h1>", unsafe_allow_html=True)
 password = st.text_input("Enter your password:", type="password")
 
 # Button to check password strength
