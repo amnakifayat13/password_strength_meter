@@ -1,7 +1,11 @@
 import streamlit as st
 import re
-import math
 import random
+import string
+
+def generate_password(length=12):
+    characters = string.ascii_letters + string.digits + "!@#$%^&*"
+    return "".join(random.choice(characters) for _ in range(length))
 
 def check_password_strength(password):
     score = 0
@@ -14,7 +18,7 @@ def check_password_strength(password):
         messages.append("❌ Password should be at least 8 characters long.")
     
     # Upper & Lowercase Check
-    if re.search(r"[A-Z]" , password) and re.search(r"[a-z]", password):
+    if re.search(r"[A-Z]", password) and re.search(r"[a-z]", password):
         score += 1
     else:
         messages.append("❌ Include both uppercase and lowercase letters.")
@@ -33,29 +37,28 @@ def check_password_strength(password):
     
     # Strength Rating
     st.markdown("---")
-    if score == 4:
-        st.markdown("<p style='color:green; font-size:20px;'>✅ Strong Password!</p>", unsafe_allow_html=True)
-    elif score == 3:
-        st.markdown("<p style='color:orange; font-size:18px;'>⚠️ Moderate Password - Consider adding more security features.</p>", unsafe_allow_html=True)
-    else:
-        st.markdown("<p style='color:red; font-size:18px;'>❌ Weak Password - Improve it using the suggestions below:</p>", unsafe_allow_html=True)
+    strength_levels = ["Very Weak", "Weak", "Moderate", "Strong", "Very Strong"]
+    colors = ["red", "orange", "yellow", "green", "darkgreen"]
     
-    for msg in messages:
-        st.markdown(f"<p style='color:red;'>{msg}</p>", unsafe_allow_html=True)
+    # Rainbow progress bar
+    rainbow_colors = ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#0000ff"]
+    st.markdown(f"""<div style='width: 100%; height: 20px; background: linear-gradient(to right, {', '.join(rainbow_colors[:score+1])}); border-radius: 10px;'></div>""", unsafe_allow_html=True)
+    
+    st.markdown(f"<p style='color:{colors[score]}; font-size:20px;'>🔒 {strength_levels[score]} Password (Score: {score}/4)</p>", unsafe_allow_html=True)
+    
+    # Password Analysis
+    st.markdown("### Password Analysis")
+    if score == 4:
+        st.markdown("✅ Your password is strong and secure!")
+    else:
+        for msg in messages:
+            st.markdown(f"<p style='color:red;'>{msg}</p>", unsafe_allow_html=True)
 
-# Generate Random Password
-option = ["Pq7$kL@3","X9yT$2Lm","A1@kFp%3","Z2fL@p7T","mL9$Xq1K"]
-choose = math.floor(random.random()*len(option))
-random_password = option[choose]
-
-# Custom CSS for styling
+# Custom Styling
 st.markdown("""
     <style>
-    body {
-            background-color: #f5f7fa;
-        }
         .stApp {
-            background: linear-gradient(135deg,rgb(223, 129, 187),rgb(94, 19, 44));
+            background: linear-gradient(135deg, rgb(223, 129, 187), rgb(94, 19, 44));
             color: white;
         }
         .stTextInput>div>div>input {
@@ -74,14 +77,13 @@ st.markdown("""
             cursor: pointer;
         }
         .stButton>button:hover {
-            background-color:rgb(63, 5, 37);
-            
+            background-color: rgb(63, 5, 37);
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Title & Input Field
-st.markdown("<h1 style='text-align: center; color:rgb(63, 5, 37);'>🔐 Password Strength Meter</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color:white;'>🔐 Password Strength Meter</h1>", unsafe_allow_html=True)
 password = st.text_input("Enter your password:", type="password")
 
 # Button to check password strength
@@ -89,4 +91,19 @@ if st.button("Check Password Strength"):
     if password:
         check_password_strength(password)
     else:
-        st.markdown(f"<p style='color:blue; font-size:16px;'>💡 Enter a Password? Suggest this one: <b>{random_password}</b></p>", unsafe_allow_html=True)
+        suggested_password = generate_password()
+        st.markdown(f"<p style='color:blue; font-size:16px;'>💡 Enter a Password? Suggest this one: <b>{suggested_password}</b></p>", unsafe_allow_html=True)
+
+# -------------------------------
+# Feedback Section
+# -------------------------------
+st.markdown("---")
+st.markdown("### 📝 Feedback")
+feedback = st.text_area("Tell us how we can improve this tool:")
+
+if st.button("Submit Feedback"):
+    if feedback:
+        # Here, we can save the feedback to a database or file (not implemented in this code)
+        st.success("✅ Thank you for your feedback!")
+    else:
+        st.warning("⚠️ Please enter some feedback before submitting.")
